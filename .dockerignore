@@ -1,0 +1,16 @@
+.git
+.gitignore
+.terraform
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/TestResults/
+terraform.tfstate*
+terraform.tfvars
+*.user
+*.suo
+README.md
+docs/
+scripts/
+terraform/

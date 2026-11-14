@@ -1,0 +1,21 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# .NET
+**/bin/
+**/obj/
+publish/
+
+# Local tooling
+.vs/
+.vscode/
+*.user
+*.suo
