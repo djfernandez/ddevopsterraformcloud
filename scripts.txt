@@ -1,5 +1,23 @@
 
   Id     Duration CommandLine
   --     -------- -----------
-   1        0.085 try { . "c:\Users\danny\AppData\Local\Programs\Microsoft VS Code\69047191fc\resources\app\out\vs\workbench\contrib\terminal\common\scripts\sh…
+   1        0.105 try { . "c:\Users\danny\AppData\Local\Programs\Microsoft VS Code\69047191fc\resources\app\out\vs\workbench\contrib\terminal\common\scripts\shellIntegration.ps1" …
+   2       14.361 terraform -chdir=terraform init
+   3        0.663 terraform -chdir=terraform validate
+   4        0.086 terraform -chdir=terraform fmt
+   5       13.924 terraform -chdir=terraform plan
+   6     4:17.456 terraform -chdir=terraform apply
+   7     1:16.278 terraform -chdir=terraform apply
+   8        9.544 .\scripts\Deploy.ps1
+   9        0.443 az account show --query id --output tsv
+  10        0.248 terraform -chdir=terraform output -raw acr_name
+  11        0.241 terraform -chdir=terraform output -raw acr_login_server
+  12        0.048 docker buil --file src/Dockerfile --tag crtrabajofinalry8lt.azurecr.io/api:20261116 .
+  13        2.453 docker build --file src/Dockerfile --tag crtrabajofinalry8lt.azurecr.io/api:20261116 .
+  14       10.537 az acr login --name crtrabajofinalry8lt
+  15     1:06.232 docker push crtrabajofinalry8lt.azurecr.io/api:20261116
+  16        0.084 terraform -chdir=terraform apply -auto-approve -var=container_image=crtrabajofinalry8lt.azurecr.io/api:20261116
+  17        0.039 Invoke-Checked "terraform" @(…
+  18        0.026 Invoke-Checked "terraform" @(…
+  19     1:15.096 terraform -chdir=terraform apply -auto-approve -var="container_image=crtrabajofinalry8lt.azurecr.io/api:20261116"
 
