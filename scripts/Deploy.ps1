@@ -37,7 +37,7 @@ try {
         "--configuration", "Release",
         "--output", "publish"
     )
-    Invoke-Checked "docker" @("build", "--tag", $image, ".")
+    Invoke-Checked "docker" @("build", "--file", "src/Dockerfile", "--tag", $image, ".")
     Invoke-Checked "az" @("acr", "login", "--name", $registryName)
     Invoke-Checked "docker" @("push", $image)
     Invoke-Checked "terraform" @(

@@ -1,11 +1,3 @@
-# variable "tags" {
-#   description = "Etiquetas opcionales para aplicar al componente"
-#   type        = map(string)
-#   default = {
-#     Environment = ""
-#   }
-# }
-
 variable "subscription_id" {
   description = "Azure subscription ID."
   type        = string
@@ -14,7 +6,8 @@ variable "subscription_id" {
 variable "location" {
   description = "Azure región para el despliegue."
   type        = string
-  default     = "eastus2"
+  default     = "westus2"
+  # default     = "eastus2"
 }
 
 variable "project_name" {
@@ -61,4 +54,16 @@ variable "key_vault_secret_name" {
   description = "Nombre del secreto del Key Vault obtenido por /secreto."
   type        = string
   default     = "app-message"
+}
+
+variable "sql_01_admin_login" {
+  description = "Usuario administrador de SQL Server."
+  type        = string
+  default     = "sqladmin"
+}
+
+variable "sql_01_admin_password" {
+  description = "Contraseña administrador de SQL Server."
+  type        = string
+  default     = "7nEK5GsZ"
 }

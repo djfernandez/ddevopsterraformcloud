@@ -1,0 +1,5 @@
+
+  Id     Duration CommandLine
+  --     -------- -----------
+   1        0.085 try { . "c:\Users\danny\AppData\Local\Programs\Microsoft VS Code\69047191fc\resources\app\out\vs\workbench\contrib\terminal\common\scripts\sh…
+

@@ -1,7 +1,7 @@
 resource "azurerm_user_assigned_identity" "uai_01" {
   name                = "id-${var.project_name}-${var.environment}-${var.location}"
   resource_group_name = azurerm_resource_group.rg_01.name
-  location            = azurerm_resource_group.rg_01.location  
+  location            = azurerm_resource_group.rg_01.location
   tags                = local.tags
 }
 

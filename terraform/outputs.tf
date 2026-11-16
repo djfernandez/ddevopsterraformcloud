@@ -32,3 +32,18 @@ output "identity_name" {
   description = "Nombre de la identidad asignada por el usuario adjunta a la aplicación de contenedor."
   value       = azurerm_user_assigned_identity.uai_01.name
 }
+
+# output "sqlserver_name" {
+#   description = "Nombre del servidor SQL Server."
+#   value       = azurerm_mssql_server.sql_01.name
+# }
+
+# output "sqldb_name" {
+#   description = "Nombre de la base de datos"
+#   value       = azurerm_mssql_database.sql_01_db.name
+# }
+
+output "storage_file_url" {
+  description = "Nombre de la base de datos"
+  value       = azurerm_storage_account.sa_01.primary_file_endpoint
+}

@@ -1,12 +1,12 @@
 resource "azurerm_container_app_environment" "cae_01" {
-  name                = "env-${var.project_name}-${var.environment}-${var.location}"
+  name                = "cae-${var.project_name}-${var.environment}-${var.location}"
   location            = azurerm_resource_group.rg_01.location
   resource_group_name = azurerm_resource_group.rg_01.name
   tags                = local.tags
 }
 
 resource "azurerm_container_app" "ca_01" {
-  name                         = "api-${var.project_name}-${var.environment}-${var.location}"
+  name                         = "ca-${var.project_name}-${var.environment}-${var.location}"
   resource_group_name          = azurerm_resource_group.rg_01.name
   container_app_environment_id = azurerm_container_app_environment.cae_01.id
   revision_mode                = "Single"
@@ -65,7 +65,7 @@ resource "azurerm_container_app" "ca_01" {
       }
       env {
         name  = "FILE_SHARE_NAME"
-        value = azurerm_storage_share.images.name
+        value = azurerm_storage_share.ss_01.name
       }
       env {
         name  = "FILE_NAME"

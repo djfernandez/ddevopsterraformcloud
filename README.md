@@ -9,7 +9,7 @@ src/AzureContainerApps.Api/   API .NET 8 y SVG de ejemplo
 terraform/                    Infraestructura como código
 scripts/Deploy.ps1            Publicar, crear/push de imagen y actualizar la app
 docs/                         Arquitectura y operación
-Dockerfile                    Imagen multi-stage con runtime .NET
+src/Dockerfile                Imagen multi-stage con runtime .NET
 ```
 
 ## Requisitos
@@ -87,7 +87,7 @@ dotnet run --project src/AzureContainerApps.Api
 
 ```powershell
 dotnet publish src/AzureContainerApps.Api/AzureContainerApps.Api.csproj -c Release -o publish
-docker build -t aca-api:local .
+docker build -f src/Dockerfile -t aca-api:local .
 docker run --rm -p 8080:8080 -e WELCOME_MESSAGE="Hola" aca-api:local
 ```
 
