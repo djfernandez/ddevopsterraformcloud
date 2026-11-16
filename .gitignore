@@ -3,11 +3,23 @@
 *.tfstate
 *.tfstate.*
 terraform.tfvars
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
 crash.log
 override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
 
 # .NET
 **/bin/

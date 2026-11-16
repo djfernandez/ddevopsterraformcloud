@@ -1,6 +1,6 @@
 output "resource_group_name" {
   description = "Grupo de recursos que contiene la implementación."
-  value       = azurerm_resource_group.rq_01.name
+  value       = azurerm_resource_group.rg_01.name
 }
 
 output "container_app_name" {
@@ -25,25 +25,10 @@ output "acr_name" {
 
 output "key_vault_name" {
   description = "Nombre del recurso de Key Vault."
-  value       = azurerm_key_vault.main.name
-}
-
-output "sql_server_name" {
-  description = "Nombre del servidor lógico de Azure SQL."
-  value       = azurerm_mssql_server.main.name
-}
-
-output "sql_database_name" {
-  description = "Nombre de la base de datos de Azure SQL."
-  value       = azurerm_mssql_database.main.name
-}
-
-output "identity_client_id" {
-  description = "ID de cliente de la identidad asignada por el usuario que está vinculada a la aplicación de contenedor."
-  value       = azurerm_user_assigned_identity.app.client_id
+  value       = azurerm_key_vault.kv_01.name
 }
 
 output "identity_name" {
   description = "Nombre de la identidad asignada por el usuario adjunta a la aplicación de contenedor."
-  value       = azurerm_user_assigned_identity.app.name
+  value       = azurerm_user_assigned_identity.uai_01.name
 }

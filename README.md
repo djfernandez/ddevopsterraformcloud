@@ -18,7 +18,7 @@ Dockerfile                    Imagen multi-stage con runtime .NET
 - Terraform >= 1.5
 - Azure CLI autenticada (`az login`) con permisos para crear recursos y asignar roles
 - Docker Desktop con el motor Linux iniciado
-- Una suscripción Azure que permita crear Container Apps, ACR, Key Vault, Storage y Azure SQL
+- Una suscripción Azure que permita crear Container Apps, ACR, Key Vault y Storage
 
 ## Despliegue inicial
 
@@ -27,16 +27,17 @@ Dockerfile                    Imagen multi-stage con runtime .NET
    ```powershell
    az login
    az account set --subscription "<subscription-id>"
+   az provider register --namespace Microsoft.KeyVault --subscription "<subscription-id>" --wait
+   az provider register --namespace Microsoft.App --subscription "<subscription-id>" --wait
+   az provider register --namespace Microsoft.ManagedIdentity --subscription "<subscription-id>" --wait
+   az provider register --namespace Microsoft.ContainerRegistry --subscription "<subscription-id>" --wait
+   az provider register --namespace Microsoft.Storage --subscription "<subscription-id>" --wait
+   az provider show --namespace Microsoft.KeyVault --subscription "<subscription-id>" --query registrationState --output tsv
    ```
 
-2. Copia `terraform/terraform.tfvars.example` a `terraform/terraform.tfvars` y completa subscription, tenant y administrador de Microsoft Entra. Proporciona la contraseña de bootstrap de SQL desde un prompt seguro, no en un archivo versionado:
+   Sustituye el marcador por el mismo ID configurado en `subscription_id` de `terraform.tfvars`. Verifica que el registro de los proveedores necesarios se complete antes de volver a ejecutar `terraform apply`. Terraform está configurado para no registrar proveedores automáticamente. El usuario necesita permiso para registrarlos en la suscripción; si no lo tiene, solicita a un administrador que registre `Microsoft.KeyVault`, `Microsoft.App`, `Microsoft.ManagedIdentity`, `Microsoft.ContainerRegistry` y `Microsoft.Storage`.
 
-   ```powershell
-   $securePassword = Read-Host "SQL bootstrap password" -AsSecureString
-   $env:TF_VAR_sql_admin_password = [System.Net.NetworkCredential]::new("", $securePassword).Password
-   ```
-
-   El estado de Terraform contiene este valor. Protege el estado local o configura un backend remoto protegido antes de usarlo con un equipo. Elimina la variable al terminar el despliegue.
+2. Copia `terraform/terraform.tfvars.example` a `terraform/terraform.tfvars` y completa los valores de la suscripción y el tenant de Microsoft Entra.
 
 3. Inicializa y crea la infraestructura:
 
@@ -47,14 +48,14 @@ Dockerfile                    Imagen multi-stage con runtime .NET
    terraform -chdir=terraform apply
    ```
 
+   El bloque `import` de `terraform/resource_group.tf` adopta el Resource Group que ya existe en la suscripción configurada. Si despliegas en una suscripción nueva donde ese grupo no existe, elimina ese bloque antes del primer `apply` para que Terraform pueda crearlo.
+
    El primer apply crea una Container App con una imagen pública de ejemplo. El script de despliegue la reemplaza por la imagen de esta aplicación.
    Terraform usa Microsoft Entra para cargar `sample.svg` y asigna `Storage File Data Privileged Contributor` al principal que ejecuta el despliegue; si el rol todavía no se propagó y falla la carga, vuelve a ejecutar `terraform apply` unos minutos después.
 
 4. Crea el secreto `app-message` en Key Vault desde **Azure Portal → Key Vault → Secrets → Generate/Import**. No pongas su valor en Terraform, en el repositorio ni en una línea de comandos.
 
-5. Da permisos SQL mínimos a la identidad de la aplicación siguiendo [docs/operations.md](docs/operations.md).
-
-6. Publica y despliega la aplicación:
+5. Publica y despliega la aplicación:
 
    ```powershell
    .\scripts\Deploy.ps1
@@ -62,7 +63,7 @@ Dockerfile                    Imagen multi-stage con runtime .NET
 
    El usuario de Azure CLI necesita `AcrPush` en el registro. Si aún no se ha propagado la asignación del rol, espera unos minutos e intenta de nuevo.
 
-7. Obtén la URL y prueba los endpoints:
+6. Obtén la URL y prueba los endpoints:
 
    ```powershell
    $url = terraform -chdir=terraform output -raw container_app_url
@@ -70,14 +71,9 @@ Dockerfile                    Imagen multi-stage con runtime .NET
    Invoke-RestMethod "$url/variable"
    Invoke-RestMethod "$url/secreto"
    Invoke-WebRequest "$url/imagen" -OutFile sample.svg
-   Invoke-RestMethod "$url/consulta"
    ```
 
-   Cuando termines, elimina el secreto temporal del entorno:
-
-   ```powershell
-   Remove-Item Env:TF_VAR_sql_admin_password
-   ```
+   Terraform ya no aprovisiona ni configura Azure SQL. El endpoint `/consulta` requiere un servidor y una base externos, configurados manualmente en la Container App; sin ellos no estará disponible.
 
 ## Desarrollo local
 
@@ -103,6 +99,6 @@ docker run --rm -p 8080:8080 -e WELCOME_MESSAGE="Hola" aca-api:local
 - User Assigned Managed Identity con roles mínimos para Key Vault y Azure Files.
 - Key Vault con autorización RBAC, eliminación recuperable y protección contra purga.
 - Storage Account con TLS 1.2, acceso por clave deshabilitado, y un file share privado con `sample.svg`.
-- Azure SQL con autenticación Entra-only para la app y base Basic. La regla de firewall `AllowAzureServices` es una simplificación para la demo; véase [docs/operations.md](docs/operations.md) para endurecer la red.
+- El endpoint `/consulta` conserva la integración de la aplicación con Azure SQL, pero Terraform no aprovisiona SQL. Para usarlo, configura un servidor y una base externos en la Container App y concede acceso a su identidad administrada.
 
 Consulta el [diagrama y los contratos de endpoints](docs/architecture.md) y las [notas operativas y de seguridad](docs/operations.md).
